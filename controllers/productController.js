@@ -49,15 +49,28 @@ export const createProductController = async (req, res) => {
 // get all products
 export const getProductController = async (req, res) => {
 	try {
+
+		const page = parseInt(req.query.page) || 1 // Hozirgi sahifa
+		const limit = parseInt(req.query.limit) || 10 // Sahifada nechta mahsulot bo'lishi
+		const skip = (page - 1) * limit // Nechta mahsulotni o'tkazib yuborish kerakligini hisoblash
+
+		// Umumiy mahsulotlar sonini olish
+		const totalProducts = await productModel.countDocuments({})
+
 		const products = await productModel
 			.find({})
 			.populate("category")
 			.select("-photo")
 			.limit(12)
 			.sort({ createdAt: -1 })
+			.skip(skip) // O'tkazib yuboriladigan mahsulotlar
+			.limit(limit) // Nechta mahsulot ko'rsatilishi
 		res.status(200).send({
 			success: true,
 			counTotal: products.length,
+			totalProducts, // Umumiy mahsulotlar soni
+			totalPages: Math.ceil(totalProducts / limit), // Umumiy sahifalar soni
+			currentPage: page, // Hozirgi sahifa
 			message: "ALlProducts ",
 			products,
 		})
@@ -182,3 +195,4 @@ export const productFilterController = async (req, res) => {
 		})
 	}
 }
+
