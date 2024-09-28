@@ -1,11 +1,11 @@
-import { createRequire } from 'module' // createRequire bilan CommonJS modullarini import qilish
+import { createRequire } from 'module' 
 import path from 'path'
 import swaggerJSDoc from 'swagger-jsdoc'
-import swaggerUi from 'swagger-ui-express' // swagger-ui-express import qilingan
+import swaggerUi from 'swagger-ui-express' 
 
 // package.json ni to'g'ri yuklash
 const require = createRequire(import.meta.url)
-const { version } = require(path.resolve('package.json')) // package.json ni to'g'ri joylashuvdan yuklash
+const { version } = require(path.resolve('package.json')) 
 
 // Swagger definition
 const options = {
@@ -38,7 +38,7 @@ const swaggerSpec = swaggerJSDoc(options)
 
 // Swagger hujjatlarining funksiyasi
 function swaggerDocs(app, port) {
-	// /api-docs marshrutida Swagger UI ni qo'shish
+	// api-docs marshrutida Swagger UI ni qo'shish
 	app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 	// JSON formatdagi hujjatlar
