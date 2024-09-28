@@ -12,6 +12,8 @@
   "author": "Bunyodbek",
   "license": "ISC",
   "dependencies": {
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.6",
     "bcrypt": "^5.1.1",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
@@ -22,6 +24,9 @@
     "mongoose": "^8.6.3",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.4",
-    "slugify": "^1.6.6"
+    "slugify": "^1.6.6",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui": "^5.17.14",
+    "swagger-ui-express": "^5.0.1"
   }
 }
