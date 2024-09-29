@@ -6,149 +6,44 @@ import { isAdmin, requireSignIn } from '../middlewares/authMiddleware.js'
 const router = express.Router()
 
 /**
- * @openapi
- * components:
- *   schemas:
- *     CreateUserInput:
- *       type: object
- *       required:
- *         - name
- *         - email
- *         - password
- *       properties:
- *         name:
- *           type: string
- *           example: Toshmat
- *         email:
- *           type: string
- *           example: toshmat@gmail.com
- *         password:
- *           type: string
- *           example: stringPassword1234
- *         phone:
- *           type: string
- *           example: 900090099
- *         address:
- *           type: string
- *           example: T.Shaxar
- *         answer:
- *           type: string
- *           example: Key
- *         
- *     CreateUserResponse:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *           example: 12345abc
- *         name:
- *           type: string
- *           example: Toshmat
- *         email:
- *           type: string
- *           example: toshmat@gmail.com
- *         password:
- *           type: string
- *           example: stringPassword1234
- *         phone:
- *           type: string
- *           example: 900090099
- *         address:
- *           type: string
- *           example: T.Shaxar
- *         answer:
- *           type: string
- *           example: Key
- *         token:
- *           type: string
- *           example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
- * 
- *     LoginInput:
- *       type: object
- *       required:
- *         - email
- *         - password
- *       properties:
- *         email:
- *           type: string
- *           example: toshmat@example.com
- *         password:
- *           type: string
- *           example: Password1234
- * 
- *     LoginResponse:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *           example: 12345abc
- *         email:
- *           type: string
- *           example: toshmat@example.com
- *         token:
- *           type: string
- *           example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
- */
-
-/**
- * @openapi
- * '/register':
- *  post:
- *     tags:
- *     - User
- *     summary: Yangi foydalanuvchini ro'yhatdan o'tkazing
+ * @swagger
+ * /api/v1/auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/CreateUserInput'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: John Smith
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: johnsmith@gmail.com
+ *               password:
+ *                 type: string
+ *                 example: 1234
  *     responses:
- *       200:
- *         description: user muvaffaqiyatli ro'yhatdan o'tdi
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/CreateUserResponse'
+ *       201:
+ *         description: User registered successfully
  *       400:
- *         description: so'rov nato'g'ri yokida noto'g'ri malumot
+ *         description: Validation error
  *       409:
- *         description: Bunday foydalanuvchi mavjud
+ *         description: User with this email already exists
  */
 router.post('/register', registerController)
 
 /**
- * @openapi
- * '/login':
- *  post:
- *     tags:
- *     - User
- *     summary: Foydalanuvchiga kirish
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/LoginInput'
- *     responses:
- *       200:
- *         description: \Muvaffaqiyatli bajarildi
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/LoginResponse'
- *       400:
- *         description: Malumot yaraqsiz
- */
-router.post('/login', loginController)
-
-/**
- * @openapi
- * '/forgot-password':
- *  post:
- *     tags:
- *     - User
- *     summary: Parolni unutdingizmi!
+ * @swagger
+ * /api/v1/auth/login:
+ *   post:
+ *     summary: Login a user
+ *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -158,7 +53,36 @@ router.post('/login', loginController)
  *             properties:
  *               email:
  *                 type: string
- *                 example: toshmat@example.com
+ *                 format: email
+ *                 example: johnsmith@gmail.com
+ *               password:
+ *                 type: string
+ *                 example: 1234
+ *     responses:
+ *       200:
+ *         description: User logged in successfully
+ *       400:
+ *         description: Invalid credentials
+ */
+router.post('/login', loginController)
+
+/**
+ * @swagger
+ * /api/v1/auth/forgot-password:
+ *   post:
+ *     summary: Forgot password
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: johnsmith@gmail.com
  *               answer:
  *                 type: string
  *                 example: Key
@@ -167,52 +91,62 @@ router.post('/login', loginController)
  *                 example: newPassword1234
  *     responses:
  *       200:
- *         description: Parol muvaffaqiyatli tiklandi
+ *         description: Password reset successfully
  *       404:
- *         description: Foydalanuvchi topilmadi
+ *         description: User not found
  */
 router.post('/forgot-password', forgotPasswordController)
 
+/**
+ * @swagger
+ * /api/v1/auth/user-auth:
+ *   get:
+ *     summary: Protected route for users
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User authenticated successfully
+ *       403:
+ *         description: Unauthorized access
+ */
+router.get('/user-auth', requireSignIn, (req, res) => {
+  res.status(200).send({ ok: true })
+})
 
+/**
+ * @swagger
+ * /api/v1/auth/admin-auth:
+ *   get:
+ *     summary: Protected route for admin
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Admin authenticated successfully
+ *       403:
+ *         description: Unauthorized access
+ */
+router.get('/admin-auth', requireSignIn, isAdmin, (req, res) => {
+  res.status(200).send({ ok: true })
+})
+
+/**
+ * @swagger
+ * /api/v1/auth/test:
+ *   get:
+ *     summary: Test route for admins
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Admin test route accessed
+ *       403:
+ *         description: Unauthorized access
+ */
 router.get('/test', requireSignIn, isAdmin, testController)
-
-/**
- * @openapi
- * '/user-auth':
- *  get:
- *     tags:
- *     - User
- *     summary: Himoyalangan foydalanuvchi route
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Foydalanuvchi muvaffaqiyatli autentifikatsiya qilindi
- *       403:
- *         description: Ruxsatsiz kirish
- */
-router.get("/user-auth", requireSignIn, (req, res) => {
-  res.status(200).send({ ok: true })
-})
-
-
-/**
- * @openapi
- * '/admin-auth':
- *  get:
- *     tags:
- *     - Admin
- *     summary: Himoyalangan admin route
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Admin autentifikatsiyasi muvaffaqiyatli amalga oshirildi
- *       403:
- *         description: Ruxsatsiz kirish
- */
-router.get("/admin-auth", requireSignIn, isAdmin, (req, res) => {
-  res.status(200).send({ ok: true })
-})
 
 export default router

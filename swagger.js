@@ -1,20 +1,19 @@
-import { createRequire } from 'module' 
-import path from 'path'
-import swaggerJSDoc from 'swagger-jsdoc'
-import swaggerUi from 'swagger-ui-express' 
+import swaggerJsDoc from 'swagger-jsdoc'
+import swaggerUi from 'swagger-ui-express'
 
-// package.json ni to'g'ri yuklash
-const require = createRequire(import.meta.url)
-const { version } = require(path.resolve('package.json')) 
-
-// Swagger definition
 const options = {
 	definition: {
-		openapi: '3.1.0',
+		openapi: '3.0.0',
 		info: {
-			title: 'Rest API Docs',
-			version, // Versiyani package.json dan olamiz
+			title: 'Mini Market',
+			version: '1.0.0',
+			description: 'API documentation',
 		},
+		servers: [
+			{
+				url: 'http://localhost:8080',
+			},
+		],
 		components: {
 			securitySchemes: {
 				bearerAuth: {
@@ -29,25 +28,37 @@ const options = {
 				bearerAuth: [],
 			},
 		],
+		tags: [
+			{
+				name: 'Users',
+				description: 'User management',
+			},
+			{
+				name: 'Admin',
+				description: 'Admin management',
+			},
+			{
+				name: 'Categories',
+				description: 'Category management',
+			},
+			{
+				name: 'Products',
+				description: 'Product management',
+			},
+			{
+				name: 'Comments',
+				description: 'Comment management',
+			},
+		],
 	},
-	apis: ['./routes/*.js', './controllers/*.js'],
+	apis: ['./routes/*.js'], // Update this path if needed
 }
 
-// Swagger specificationni generatsiya qilish
-const swaggerSpec = swaggerJSDoc(options)
+const swaggerSpec = swaggerJsDoc(options)
 
-// Swagger hujjatlarining funksiyasi
-function swaggerDocs(app, port) {
-	// api-docs marshrutida Swagger UI ni qo'shish
+const swaggerDocs = (app, port) => {
 	app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
-
-	// JSON formatdagi hujjatlar
-	app.get('/api-docs.json', (req, res) => {
-		res.setHeader('Content-Type', 'application/json')
-		res.send(swaggerSpec)
-	})
-
-	console.log(`Swagger hujjatlar: http://localhost:${port}/api-docs manzilda mavjud`)
+	console.log(`Swagger docs available at http://localhost:${port}/api-docs`)
 }
 
 export default swaggerDocs
