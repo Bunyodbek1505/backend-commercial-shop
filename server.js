@@ -1,42 +1,44 @@
-import cors from 'cors';
-import dotenv from 'dotenv';
-import express from 'express';
-import morgan from 'morgan';
-import connectDB from './config/db.js';
-import authRoutes from './routes/authRoute.js';
-import categoryRoutes from './routes/categoryRoutes.js';
-import productRoutes from './routes/productRoutes.js';
-import swaggerDocs from './swagger.js';
+import cors from 'cors'
+import dotenv from 'dotenv'
+import express from 'express'
+import morgan from 'morgan'
+import connectDB from './config/db.js'
+import authRoutes from './routes/authRoute.js'
+import categoryRoutes from './routes/categoryRoutes.js'
+import commentRoutes from './routes/comentsRoute.js'
+import productRoutes from './routes/productRoutes.js'
+import swaggerDocs from './swagger.js'
 
-// configure env
-dotenv.config();
+// ENV sozlang
+dotenv.config()
 
-// database config
-connectDB();
+// Ma'lumotlar bazasi konfiguratsiyasi
+connectDB()
 
-// rest object
-const app = express();
+// REST object
+const app = express()
 
-// middlewares
-app.use(cors());
-app.use(express.json());
-app.use(morgan('dev'));
+// Middlewares
+app.use(cors())
+app.use(express.json())
+app.use(morgan('dev'))
 
-// routes
-app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/category', categoryRoutes);
-app.use('/api/v1/product', productRoutes);
+// Routes
+app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/category', categoryRoutes)
+app.use('/api/v1/product', productRoutes)
+app.use('/api/v1/comments', commentRoutes) // Commentlar marshruti
 
-// rest api
+// REST API
 app.get('/', (req, res) => {
-  res.send('<h1>Welcome to Fullstack Project</h1>');
-});
+  res.send('<h1>Fulstack loyihasiga xush kelibsiz</h1>')
+})
 
 // PORT
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000
 
-// run listen
+// Listen
 app.listen(PORT, () => {
-  console.log(`Server Running in ${process.env.DEV_MODE} mode on port ${PORT}`);
-  swaggerDocs(app, PORT);
-});
+  console.log(`Server Running in ${process.env.DEV_MODE} mode on port ${PORT}`)
+  swaggerDocs(app, PORT)
+})
