@@ -115,38 +115,12 @@ router.get('/user-auth', requireSignIn, (req, res) => {
   res.status(200).send({ ok: true })
 })
 
-/**
- * @swagger
- * /api/v1/auth/admin-auth:
- *   get:
- *     summary: Protected route for admin
- *     tags: [Admin]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Admin authenticated successfully
- *       403:
- *         description: Unauthorized access
- */
+
 router.get('/admin-auth', requireSignIn, isAdmin, (req, res) => {
   res.status(200).send({ ok: true })
 })
 
-/**
- * @swagger
- * /api/v1/auth/test:
- *   get:
- *     summary: Test route for admins
- *     tags: [Admin]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Admin test route accessed
- *       403:
- *         description: Unauthorized access
- */
+
 router.get('/test', requireSignIn, isAdmin, testController)
 
 export default router

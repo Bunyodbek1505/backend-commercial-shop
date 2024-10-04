@@ -34,10 +34,6 @@ const options = {
 				description: 'User management',
 			},
 			{
-				name: 'Admin',
-				description: 'Admin management',
-			},
-			{
 				name: 'Categories',
 				description: 'Category management',
 			},
